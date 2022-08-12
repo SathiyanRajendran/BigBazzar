@@ -30,7 +30,7 @@ namespace BigBazzar.Repository
         {
             var C = (from i in _context.Customers where i.CustomerEmail == customer.CustomerEmail && i.Password == customer.Password select i).FirstOrDefault();
             return C;
-        }
+        } 
 
         public async Task<List<Customers>> GetAllCustomers()
         {
