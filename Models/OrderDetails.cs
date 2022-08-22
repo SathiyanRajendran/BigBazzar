@@ -10,8 +10,9 @@ namespace BigBazzar.Models
         public int? ProductId { get; set; }
         [ForeignKey("ProductId")]
         public virtual Products? Products { get; set; }
-
+        [Range(0,int.MaxValue,ErrorMessage ="Value must be greater than 0")]
         public float? ProductRate { get; set; }
+        [Range(0,int.MaxValue,ErrorMessage ="Value must be greater than 0")]
         public float? ProductQuantity { get; set; }
         public int? OrderMasterId { get; set; }
         [ForeignKey("OrderMasterId")]

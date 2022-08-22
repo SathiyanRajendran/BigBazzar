@@ -36,10 +36,11 @@ namespace BigBazzar.Controllers
             return await _repository.EditProduct(productId, product);
 
         }
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task DeleteProduct(int id)
         {
             await _repository.DeleteProduct(id);
         }
+      
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BigBazzar.Data;
 using BigBazzar.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BigBazzar.Repository
 {
@@ -23,6 +24,12 @@ namespace BigBazzar.Repository
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
             return category;
+        }
+
+        public async Task<Admin> AdminLogin(Admin A)
+        {
+            var c = (from i in _context.Admins where i.AdminEmail == A.AdminEmail && i.AdminPassword == A.AdminPassword select i).FirstOrDefault();
+            return c;
         }
 
         public async Task DeleteAdmin(int AdminId)
@@ -59,6 +66,19 @@ namespace BigBazzar.Repository
             _context.Update(A);
             _context.SaveChanges();
             return A;
+        }
+
+        public async Task<List<Categories>> GetAllCategories()
+        {
+            try
+            {
+                return await _context.Categories.ToListAsync();
+            }
+            catch
+            {
+                throw new NotImplementedException();
+
+            }
         }
     }
 }

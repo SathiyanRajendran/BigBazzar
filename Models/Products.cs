@@ -7,9 +7,13 @@ namespace BigBazzar.Models
     {
         [Key]
         public int ProductId { get; set; }
+        [Required(ErrorMessage = "Enter the Product Name")]
+        [StringLength(50)]
         public string? ProductName { get; set; }
         public float? UnitPrice { get; set; }
         public string? ProductImage { get; set; }
+        [Range(0, int.MaxValue, ErrorMessage = "Value must be greater than 0")]
+        public int? ProductQuantity { get; set; }
         public virtual ICollection<OrderDetails>? OrderDetails { get; set; }
         public virtual ICollection<Feedback>? Feedbacks { get; set; }
         public virtual ICollection<Carts>? Carts { get; set; }

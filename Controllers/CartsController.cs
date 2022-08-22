@@ -14,11 +14,13 @@ namespace BigBazzar.Controllers
         {
             _repository = repository;
         }
-        [HttpGet]
+        [HttpGet("{id}")]
+        //get all carts of a particular customer by using the customer id
         public async Task<ActionResult<List<Carts>>> Getcarts(int id)
         {
 
-            return await _repository.GetAllCart(id);
+            List<Carts> result =  await _repository.GetAllCart(id);
+            return result;
         }
         [HttpPost]
         public async Task<ActionResult<Carts>> AddCart(Carts cart)
@@ -27,13 +29,14 @@ namespace BigBazzar.Controllers
             return await _repository.AddToCart(cart);
         }
         [HttpPut]
-        public async Task<ActionResult<Carts>> updateCart(int id,Carts C)
+        public async Task<ActionResult<Carts>> UpdateCart(int id,Carts C)
         {
             return await _repository.EditCart(id,C);
         }
         [HttpDelete]
         public async Task<ActionResult> DeleteCart(int id)
         {
+            
             await _repository.DeleteFromCart(id);
             return NoContent();
         }

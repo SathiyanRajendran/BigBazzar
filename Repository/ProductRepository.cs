@@ -44,13 +44,19 @@ namespace BigBazzar.Repository
         {
             try
             {
-                return await _context.Products.ToListAsync();
+                return await _context.Products.Include(x=>x.Categories).ToListAsync();
             }
             catch
             {
                 throw new NotImplementedException();
 
             }
+        }
+        public async Task<List<Products>> Search(string option,string search)
+        {
+           
+            return await _context.Products.Where(x => x.ProductName.StartsWith(search) || search == null).ToListAsync();  
+           
         }
 
         public async Task<Products> GetProductbyId(int productId)

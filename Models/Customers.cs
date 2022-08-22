@@ -17,26 +17,28 @@ namespace BigBazzar.Models
         [DataType(DataType.Password)]
         [StringLength(100, ErrorMessage = "Password \"{0}\" must have {2} character", MinimumLength = 8)]
 
-        public string Password { get; set; }
+        public string? Password { get; set; }
         [DataType(DataType.Password)]
 
-        [Required(ErrorMessage = "Confirmation Password is required.")]
-        [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
+        [Compare("Password", ErrorMessage = "Password and Confirmation Password do not match.")]
         [NotMapped]
         
-        public string ConfirmPassword { get; set; }
-        [Display(Name = "Mobile Number:")]
-       
+        public string? ConfirmPassword { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Phone Number Required!")]
+
+        [StringLength(10, MinimumLength = 10)]
         public string? MobileNumber { get; set; }
         public string ?CustomerCity { get; set; }
         [DataType(DataType.PostalCode)]
+        [StringLength(6, MinimumLength = 6)]
 
         public string ?Pincode { get; set; }
-        [Required]
+        
         public string? SecurityQuestion { get; set; }
-        [Required]
+       
         public string? Answer { get; set; }
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
         public string ?SecurityCode { get; set; }
         public DateTime? CreationDate { get; set; }
         public virtual ICollection<Carts>? Carts { get; set; }

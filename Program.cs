@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BigBazzar.Data;
 using BigBazzar.Repository;
 using BigBazzar.Services.EmailService;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BigBazzarContext>(options =>
@@ -16,7 +17,11 @@ builder.Services.AddScoped<ICartRepo, CartRepo>();
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<IOrderRepo, OrderRepo>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+builder.Services.AddControllers().AddJsonOptions(options => //exception on cycles-500 error.
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 // Add services to the container.
 

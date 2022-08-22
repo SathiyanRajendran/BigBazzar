@@ -9,5 +9,6 @@ namespace BigBazzar.Repository
         Task<Carts> GetCartById(int id);
         Task<List<Carts>> GetAllCart(int customerId);
         Task<Carts> EditCart(int id,Carts C);
+
     }
 }

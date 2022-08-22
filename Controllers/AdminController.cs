@@ -19,20 +19,38 @@ namespace BigBazzar.Controllers
         {
             return await _repository.AddNewAdmin(A);
         }
-        [HttpPost("DeleteAdmin")]
+        [HttpDelete("DeleteAdmin")]
         public async Task AdminDelete(int AdminId)
         {
             await _repository.DeleteAdmin(AdminId);
         }
+        [HttpGet]
+        public async Task<List<Categories>> GetAllCategories()
+        {
+            return await _repository.GetAllCategories();
+        }
+
         [HttpPost("AddCategory")]
         public async Task<ActionResult<Categories>> PostCategory(Categories C)
         {
             return await _repository.AddNewCategory(C);
         }
-        [HttpPost("DeleteCategory")]
+        
+        [HttpDelete("DeleteCategory")]
         public async Task DeleteCategory(int CategoryId)
         {
             await _repository.DeleteCategory(CategoryId);   
         }
+        [HttpPost("AdminLogin")]
+        public async Task<ActionResult<Admin>> Login(Admin admin)
+        {
+            var loginadmin = await _repository.AdminLogin(admin);
+            if(loginadmin==null)
+            {
+                return BadRequest("Invalid Credentials");
+            }
+            return loginadmin;
+        }
     }
 }
+

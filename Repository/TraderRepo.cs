@@ -46,6 +46,12 @@ namespace BigBazzar.Repository
             }
         }
 
+        public async Task<List<Products>> GetProductByTraderId(int TraderId)
+        {
+            var products = await (from i in _context.Products.Include(x => x.Categories).Include(y => y.Traders) where i.TraderId ==TraderId select i).ToListAsync();
+            return products;
+        }
+
         public async Task<Traders> GetTraderbyId(int TraderId)
         {
             return await  _context.Traders.FindAsync(TraderId);
