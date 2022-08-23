@@ -1,14 +1,22 @@
 ﻿using BigBazzar.Data;
 using BigBazzar.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BigBazzar.Repository
 {
     public class TraderRepo : ITraderRepo
     {
         private readonly BigBazzarContext _context;
-        public TraderRepo(BigBazzarContext context)
+        private readonly IConfiguration _configuration;
+       
+        public TraderRepo(BigBazzarContext context,IConfiguration configuration)
         {
+            _configuration = configuration;
+
             _context = context;
         }
 
@@ -48,7 +56,7 @@ namespace BigBazzar.Repository
 
         public async Task<List<Products>> GetProductByTraderId(int TraderId)
         {
-            var products = await (from i in _context.Products.Include(x => x.Categories).Include(y => y.Traders) where i.TraderId ==TraderId select i).ToListAsync();
+            List<Products> products = await (from i in _context.Products.Include(x => x.Categories).Include(y => y.Traders) where i.TraderId ==TraderId select i).ToListAsync();
             return products;
         }
 
@@ -57,10 +65,49 @@ namespace BigBazzar.Repository
             return await  _context.Traders.FindAsync(TraderId);
         }
 
-        public async Task<Traders> TraderLogin(Traders T)
+        public async Task<TraderToken> TraderLogin(Traders T)
         {
-            var C = (from i in _context.Traders where i.TraderEmail == T.TraderEmail && i.Password == T.Password select i).FirstOrDefault();
-            return C;
+            TraderToken Tt = new TraderToken();
+            Traders trader = await  (from i in _context.Traders where i.TraderEmail == T.TraderEmail && i.Password == T.Password select i).FirstOrDefaultAsync();
+            if (trader != null)
+            {
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name,trader.TraderEmail),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+
+
+
+                var token = GetToken(authClaims);
+                string s = new JwtSecurityTokenHandler().WriteToken(token);
+                Tt.Token = s;
+                Tt.traders = trader;
+                return Tt;
+
+
+
+            }
+            return null;
+        }
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+
+
+            var token = new JwtSecurityToken(
+                 issuer: _configuration["JWT:ValidIssuer"],
+                 audience: _configuration["JWT:ValidAudience"],
+                 expires: DateTime.Now.AddMinutes(30),
+                 claims: authClaims,
+                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                 ); ;
+
+
+
+            return token;
         }
 
         public async Task<Traders> UpdateTraders(int TraderId, Traders Trader)

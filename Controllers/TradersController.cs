@@ -1,6 +1,7 @@
 ﻿using BigBazzar.Helper;
 using BigBazzar.Models;
 using BigBazzar.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,13 +21,14 @@ namespace BigBazzar.Controllers
         {
             return await _repository.GetAllTraders();
         }
+        [Authorize]
         [HttpGet("TraderId")]
-        public async Task<ActionResult<List<Products>>> GetProductByTraderId(int id)//It can shows the products added by the Traders
+        public async Task<ActionResult<List<Products>>> GetProductByTraderId(int id)//It can shows the products details added by the Traders
         {
             return await _repository.GetProductByTraderId(id);
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Traders>> GetTrader(int id)
+        public async Task<ActionResult<Traders>> GetTrader(int id) //It can shows the trader Details
         {
             return await _repository.GetTraderbyId(id);
         }
@@ -50,7 +52,7 @@ namespace BigBazzar.Controllers
             return await _repository.AddNewTraders(T);
         }
         [HttpPost("Login")]
-        public async Task<ActionResult<Traders>> TraderLogin(Traders T)
+        public async Task<ActionResult<TraderToken>> TraderLogin(Traders T)
          {
             //Traders c = T;
             //var PasswordHash = EncodePassword.GetMd5Hash(c.Password);
@@ -61,13 +63,20 @@ namespace BigBazzar.Controllers
             T.Password = PasswordHash;
             T.ConfirmPassword = PasswordHash;
             //return await _repository.TraderLogin(T);
-
-            var traderlogin = await _repository.TraderLogin(T);
-            if (traderlogin == null)
+            //-------------------------------------------------
+            TraderToken traderlogin = await _repository.TraderLogin(T);
+            if (string.IsNullOrEmpty(traderlogin.Token))
             {
-                return BadRequest("Invalid Credentials");
+                return Unauthorized();
             }
-            return traderlogin;
+            return Ok(traderlogin);
+            //--------------------------------------------------
+            //var traderlogin = await _repository.TraderLogin(T);
+            //if (traderlogin == null)
+            //{
+            //    return BadRequest("Invalid Credentials");
+            //}
+            //return traderlogin;
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrader(int id)

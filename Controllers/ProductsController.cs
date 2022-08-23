@@ -15,7 +15,7 @@ namespace BigBazzar.Controllers
             _repository = repository;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
+        public async Task<ActionResult<IList<Products>>> GetProducts()
         {
 
             return await _repository.GetAllProduct();
@@ -34,13 +34,11 @@ namespace BigBazzar.Controllers
         public async Task<ActionResult<Products>> PutProduct(int productId, Products product)
         {
             return await _repository.EditProduct(productId, product);
-
         }
         [HttpDelete("{id}")]
         public async Task DeleteProduct(int id)
         {
             await _repository.DeleteProduct(id);
-        }
-      
+        }    
     }
 }

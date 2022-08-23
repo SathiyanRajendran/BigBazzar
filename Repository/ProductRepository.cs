@@ -44,7 +44,7 @@ namespace BigBazzar.Repository
         {
             try
             {
-                return await _context.Products.Include(x=>x.Categories).ToListAsync();
+                return await _context.Products.Include(x=>x.Categories).Include(x=>x.Traders).ToListAsync();
             }
             catch
             {
