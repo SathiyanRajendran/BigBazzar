@@ -15,26 +15,25 @@ namespace BigBazzar.Controllers
             _repository = repository;
         }
         [HttpGet("{id}")]
-        //get all carts of a particular customer by using the customer id
+        //get all carts of a particular customer by using the customer id (/api/carts/{id})
         public async Task<ActionResult<List<Carts>>> Getcarts(int id)
         {
 
-            List<Carts> result =  await _repository.GetAllCart(id);
+            List<Carts> result = await _repository.GetAllCart(id);
             return result;
         }
         [HttpPost]
-        public async Task<ActionResult<Carts>> AddCart(Carts cart)
+        public async Task<ActionResult<Carts>> AddCart(Carts cart)//(api/carts)
         {
-
             return await _repository.AddToCart(cart);
         }
-        [HttpPut]
-        public async Task<ActionResult<Carts>> UpdateCart(int id,Carts C)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Carts>> UpdateCart(int id, Carts C) //(API/CARTS/{ID})
         {
-            return await _repository.EditCart(id,C);
+            return await _repository.EditCart(id, C);
         }
-        [HttpDelete]
-        public async Task<ActionResult> DeleteCart(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteCart(int id) //(API/CARTS/{ID})
         {
             
             await _repository.DeleteFromCart(id);

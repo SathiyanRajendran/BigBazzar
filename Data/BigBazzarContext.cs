@@ -25,6 +25,12 @@ namespace BigBazzar.Data
                 optionsBuilder.UseSqlServer("Server=AY1KPKYG2U1G;Database=BigBazzar;User Id=sa; Password=!Morning1;MultipleActiveResultSets=true");
             }
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<OrderMasters>().HasMany(od => od.OrderDetails).WithOne(om => om.OrderMasters).HasForeignKey(k => k.OrderMasterId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Products>().HasMany(od => od.OrderDetails).WithOne(pr => pr.Products).HasForeignKey(k => k.ProductId).OnDelete(DeleteBehavior.ClientSetNull);
+        }
 
         public DbSet<BigBazzar.Models.Customers> Customers { get; set; } = default!;
         public DbSet<BigBazzar.Models.Carts> Carts { get; set; } = default!;

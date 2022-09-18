@@ -56,7 +56,9 @@ namespace BigBazzar.Repository
 
         public async Task<List<Products>> GetProductByTraderId(int TraderId)
         {
-            List<Products> products = await (from i in _context.Products.Include(x => x.Categories).Include(y => y.Traders) where i.TraderId ==TraderId select i).ToListAsync();
+            List<Products> products = await (from i in _context.Products.Include(x => x.Categories).Include(y => y.Traders) 
+                                             where i.TraderId ==TraderId            //Here we show the products owned by the respective traders
+                                             select i).ToListAsync();
             return products;
         }
 
@@ -64,11 +66,14 @@ namespace BigBazzar.Repository
         {
             return await  _context.Traders.FindAsync(TraderId);
         }
+        //-------------------------------------------------------------------------------------------------
 
         public async Task<TraderToken> TraderLogin(Traders T)
         {
             TraderToken Tt = new TraderToken();
-            Traders trader = await  (from i in _context.Traders where i.TraderEmail == T.TraderEmail && i.Password == T.Password select i).FirstOrDefaultAsync();
+            Traders trader = await  (from i in _context.Traders 
+                                     where i.TraderEmail == T.TraderEmail && i.Password == T.Password 
+                                     select i).FirstOrDefaultAsync();
             if (trader != null)
             {
                 var authClaims = new List<Claim>
@@ -109,6 +114,7 @@ namespace BigBazzar.Repository
 
             return token;
         }
+        //--------------------------------------------------------------------------------------------------------
 
         public async Task<Traders> UpdateTraders(int TraderId, Traders Trader)
         {

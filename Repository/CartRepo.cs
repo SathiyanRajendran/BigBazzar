@@ -13,6 +13,8 @@ namespace BigBazzar.Repository
         }
 
         public async Task<Carts>? AddToCart(Carts cart)
+                                   //When the customer wants to add a product to their cart it will update on a cart when he/she already have
+                                   //or else it will go and create a new cart.
         {
             if(await isCartExists(cart))
             {
@@ -27,6 +29,7 @@ namespace BigBazzar.Repository
         }
 
         public async Task DeleteFromCart(int id)
+            //here we delete the cart by the cartid.
         {
             try
             {
@@ -42,31 +45,40 @@ namespace BigBazzar.Repository
 
 
         public async Task<Carts> EditCart(int id,Carts C)
+            //here we edit the cart by the cartid.
         {
             _context.Update(C);
             _context.SaveChanges();
             return C;
         }
 
-        public async Task<List<Carts>> GetAllCart(int customerId) //get all products of the cart by the customerid
+        public async Task<List<Carts>> GetAllCart(int customerId) //get all products of the cart(CartId) by the customerid
+                                                          // Here include denotes the "Instead of productid here I use the productname,quantity"
+                                                          //customer can only see the carts which he have.
         {
             List<Carts> cartList =await (from c in _context.Carts.Include(x => x.Products) where c.CustomerId == customerId select c).ToListAsync();
             return cartList;
         }
         public async Task<Carts> GetCartById(int cartid)
+            //here we get the carts by the cartid.
         {
-            var result = await (from c in _context.Carts.Include(x => x.Products) where c.CartId == cartid select c).SingleAsync();
+            var result = await (from c in _context.Carts.Include(x => x.Products) 
+                                where c.CartId == cartid 
+                                select c).SingleAsync();
             return result;
         }
-        private async Task<bool> isCartExists(Carts ct)
+        private async Task<bool> isCartExists(Carts ct)  //THIS IS INTERCONNECTED WITH THE ADD TO CART
         {
-            var cart = (from c in _context.Carts where c.ProductId == ct.ProductId && c.CustomerId == ct.CustomerId select c).FirstOrDefault();
+            var cart = (from c in _context.Carts
+                        where c.ProductId == ct.ProductId && c.CustomerId == ct.CustomerId 
+                        select c).FirstOrDefault();
             
-            if(cart==null)
+            if(cart==null)  //Here we add the products to the new cart
+
             {
                 return false;
             }
-            else
+            else   //Here we update the products quantity.
             {
                 cart.ProductQuantity += ct.ProductQuantity;
                 _context.Carts.Update(cart);
