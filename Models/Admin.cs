@@ -29,6 +29,6 @@ namespace BigBazzar.Models
         [NotMapped]
         [Display(Name = "Confirm Password")]
 
-        public string? ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; } 
     }
 }
